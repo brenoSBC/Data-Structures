@@ -16,4 +16,18 @@ int add_at(Node **head, int value, int index);
 
 int remove_last(Node **head);
 
+int remove_at(Node **head, int index);
+
+int destroy_list(Node **head);
+
+int is_empty(Node *head);
+
+int size(Node *head, int *size_var);
+
+int print_list(Node *head);
+
+void print_menu();
+
+void take_return(int flag);
+
 #endif
