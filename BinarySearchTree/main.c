@@ -6,6 +6,9 @@
 
 int main() 
 {
+
+    bool flag;
+
     Node *root = NULL;
     add_node(&root, 10);
     add_node(&root, 9);
@@ -18,7 +21,12 @@ int main()
     add_node(&root, 1);
     add_node(&root, 2);
     add_node(&root, 6);
-    print_tree(&root);
+    print_tree(root);
+
+    flag = find(root, 8);
+    if(flag == true) {
+        printf("numero existe");
+    }
 
     return 0;
 }

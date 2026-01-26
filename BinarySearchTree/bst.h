@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 typedef struct Node
 {
     int value;
@@ -8,5 +10,7 @@ typedef struct Node
 
 int add_node(Node **root, int value);
 
-int print_tree(Node **root);
+void print_tree(Node *root);
+
+bool find(Node *root, int value);
 

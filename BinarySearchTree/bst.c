@@ -26,14 +26,32 @@ int add_node(Node **root, int value) {
     }
 }
 
-int print_tree(Node **root) {
+void print_tree(Node *root) {
 
-   if(*root == NULL) {
-        return 0;
+   if(root == NULL) {
+        return;
    }
 
-   print_tree(&(*root)->left);
-   printf("%d ", (*root)->value);
-   print_tree(&(*root)->right);
+   print_tree(root->left);
+   printf("%d ", root->value);
+   print_tree(root->right);
 
+}
+
+bool find(Node *root, int value) {
+
+    if(root == NULL) {
+        return false;
+    }
+
+    if(root->value == value) {
+        return true;
+    }
+
+    if(value < root->value) {
+        return find(root->left, value);
+    } else {
+        return find(root->right, value);
+
+    }
 }
