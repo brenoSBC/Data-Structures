@@ -5,24 +5,29 @@
 
 #include "linked_list.h"
 
-typedef struct Node {
+typedef struct Node
+{
     void *data;
     struct Node *next;
 } Node;
 
-struct LinkedList {
+struct LinkedList
+{
     Node *head;
     Node *tail;
     size_t size;
     size_t element_size;
 };
 
-LinkedList *create(size_t element_size) {
+LinkedList *ll_create(size_t element_size)
+{
 
-    if(element_size == 0) return NULL;
+    if (element_size == 0)
+        return NULL;
 
     LinkedList *list = malloc(sizeof(LinkedList));
-    if(list == NULL) return NULL;
+    if (list == NULL)
+        return NULL;
 
     list->head = NULL;
     list->tail = NULL;
@@ -32,12 +37,15 @@ LinkedList *create(size_t element_size) {
     return list;
 }
 
-void destroy(LinkedList *list) {
+void ll_destroy(LinkedList *list)
+{
 
-    if(list == NULL) return;
-    
+    if (list == NULL)
+        return;
+
     Node *current = list->head;
-    while(current != NULL) {
+    while (current != NULL)
+    {
         Node *next = current->next;
         free(current->data);
         free(current);
@@ -46,15 +54,19 @@ void destroy(LinkedList *list) {
     free(list);
 }
 
-bool add_last(LinkedList *list, const void *element) {
+bool ll_add_last(LinkedList *list, const void *element)
+{
 
-    if(list == NULL || element == NULL) return false;
+    if (list == NULL || element == NULL)
+        return false;
 
     Node *new_node = malloc(sizeof(Node));
-    if(new_node == NULL) return NULL;
+    if (new_node == NULL)
+        return false;
 
     new_node->data = malloc(list->element_size);
-    if(new_node->data == NULL){
+    if (new_node->data == NULL)
+    {
         free(new_node);
         return false;
     }
@@ -62,9 +74,12 @@ bool add_last(LinkedList *list, const void *element) {
     memcpy(new_node->data, element, list->element_size);
     new_node->next = NULL;
 
-    if(list->head == NULL) {
+    if (list->head == NULL)
+    {
         list->head = new_node;
-    } else {
+    }
+    else
+    {
         list->tail->next = new_node;
     }
 
@@ -74,11 +89,71 @@ bool add_last(LinkedList *list, const void *element) {
     return true;
 }
 
-bool remove_last(LinkedList *list) {
+bool ll_add_at(LinkedList *list, const void *element, const int index)
+{
 
-    if(list == NULL || list->head == NULL) return false;;
+    if (list == NULL || element == NULL || index < 0 || index > list->size)
+        return false;
 
-    if(list->head == list->tail) {
+    Node *new_node = malloc(sizeof(Node));
+    if (new_node == NULL)
+        return false;
+
+    new_node->data = malloc(list->element_size);
+    if (new_node->data == NULL)
+    {
+        free(new_node);
+        return false;
+    }
+
+    memcpy(new_node->data, element, list->element_size);
+
+    if (index == 0)
+    {
+        new_node->next = list->head;
+        list->head = new_node;
+        if (list->tail == NULL)
+        {
+            list->tail = new_node;
+        }
+        list->size++;
+        return true;
+    }
+    else if (index == list->size)
+    {
+        new_node->next = NULL;
+        list->tail->next = new_node;
+        list->tail = new_node;
+        list->size++;
+        return true;
+    }
+
+    Node *current = list->head;
+    int local_index = 0;
+    while (current != NULL && local_index != index - 1)
+    {
+        current = current->next;
+        ++local_index;
+    }
+
+    Node *temp = current->next;
+    current->next = new_node;
+    new_node->next = temp;
+
+    list->size++;
+
+    return true;
+}
+
+bool ll_remove_last(LinkedList *list)
+{
+
+    if (list == NULL || list->head == NULL)
+        return false;
+    ;
+
+    if (list->head == list->tail)
+    {
         free(list->head->data);
         free(list->head);
         list->head = NULL;
@@ -88,7 +163,8 @@ bool remove_last(LinkedList *list) {
     }
 
     Node *current = list->head;
-    while(current->next != list->tail) {
+    while (current->next != list->tail)
+    {
         current = current->next;
     }
 
@@ -101,44 +177,6 @@ bool remove_last(LinkedList *list) {
 
     return true;
 }
-
-// int add_at(Node **head, int value, int index) {
-
-//     if(index < 0) {
-//         return 7;
-//     }
-
-//     Node *new_node = NULL;
-//     if (allocate_memory(&new_node) != 0) {
-//         return 1;
-//     }
-//     new_node->value = value;
-//     new_node->next = NULL;
-
-//     if (index == 0) {
-//         new_node->next = *head;
-//         *head = new_node;
-//         return 0;
-//     }
-
-//     if(*head == NULL) {
-//         free(new_node);
-//         return 3;
-//     }
-    
-//     Node *current = *head;
-//     int local_index = 0;
-//     while(current != NULL && local_index != index - 1) {
-//         current = current->next;
-//         ++local_index;
-//     }
-
-//     Node *temp = current->next;
-//     current->next = new_node;
-//     new_node->next = temp;
-
-//     return 0;
-// }
 
 // int remove_at(Node **head, int index) {
 
@@ -173,44 +211,9 @@ bool remove_last(LinkedList *list) {
 //     return 0;
 // }
 
-// int is_empty(Node *head) {
 
-//     if(head == NULL) {
-//         return 5;
-//     }
-//     return 6;
-// }
 
-// int size(Node *head, int *size_var) {
 
-//     if(head == NULL) {
-//         *size_var = 0;
-//     }
+int print_list(Node *head) {
 
-//     Node *current = head;
-//      while(current != NULL) {
-//         ++(*size_var);
-//         current = current->next;
-//      }
-//     return 0;
-// }
-
-// int print_list(Node *head) {
-
-//     if(head == NULL) {
-//         printf("nao tem head");
-//         return 3;
-//     }
-
-//     Node *current = head;
-//     while(current != NULL) {
-//         if(current->next != NULL) {
-//             printf("[ %d ] -> ", current->value);
-//         } else {
-//             printf("[ %d ] ", current->value);
-//         }
-//         current = current->next;
-//     }
-//     return 0;
-// }
-
+}
