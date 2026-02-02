@@ -27,7 +27,9 @@ LinkedList *ll_create(size_t element_size)
 
     LinkedList *list = malloc(sizeof(LinkedList));
     if (list == NULL)
+    {
         return NULL;
+    }
 
     list->head = NULL;
     list->tail = NULL;
@@ -58,7 +60,9 @@ bool ll_add_last(LinkedList *list, const void *element)
 {
 
     if (list == NULL || element == NULL)
+    {
         return false;
+    }
 
     Node *new_node = malloc(sizeof(Node));
     if (new_node == NULL)
@@ -89,15 +93,19 @@ bool ll_add_last(LinkedList *list, const void *element)
     return true;
 }
 
-bool ll_add_at(LinkedList *list, const void *element, const int index)
+bool ll_add_at(LinkedList *list, const void *element, const size_t index)
 {
 
-    if (list == NULL || element == NULL || index < 0 || index > list->size)
+    if (list == NULL || element == NULL || index > list->size)
+    {
         return false;
+    }
 
     Node *new_node = malloc(sizeof(Node));
     if (new_node == NULL)
+    {
         return false;
+    }
 
     new_node->data = malloc(list->element_size);
     if (new_node->data == NULL)
@@ -129,7 +137,7 @@ bool ll_add_at(LinkedList *list, const void *element, const int index)
     }
 
     Node *current = list->head;
-    int local_index = 0;
+    size_t local_index = 0;
     while (current != NULL && local_index != index - 1)
     {
         current = current->next;
@@ -149,8 +157,9 @@ bool ll_remove_last(LinkedList *list)
 {
 
     if (list == NULL || list->head == NULL)
+    {
         return false;
-    ;
+    }
 
     if (list->head == list->tail)
     {
@@ -178,42 +187,82 @@ bool ll_remove_last(LinkedList *list)
     return true;
 }
 
-// int remove_at(Node **head, int index) {
+bool ll_remove_at(LinkedList *list, const size_t index)
+{
 
-//     if(index < 0) {
-//         printf("indice invalido coloque um indice valido");
-//         return 2;
-//     }
+    if (list == NULL || index >= list->size)
+    {
+        return false;
+    }
 
-//     if(*head == NULL) {
-//         return 3;
-//     }
+    if (index == 0)
+    {
 
-//     if(index == 0) {
-//       Node *temp = *head;
-//       *head = temp->next;
-//       free(temp);
-//       return 0;
-//     }
+        Node *delete_node = list->head;
+        list->head = delete_node->next;
 
-//     Node *current = *head;
-//     int local_index = 0;
+        free(delete_node->data);
+        free(delete_node);
+        list->size--;
 
-//     while(local_index != index - 1) {
-//         current = current->next;
-//         ++local_index;
-//     }
+        if (list->size == 0)
+        {
+            list->tail = NULL;
+        }
+        return true;
+    }
 
-//     Node *delete_node = current->next;
-//     current->next = delete_node->next;
-//     free(delete_node);
+    Node *current = list->head;
+    size_t local_index = 0;
+    while (current != NULL && local_index != index - 1)
+    {
+        current = current->next;
+        ++local_index;
+    }
 
-//     return 0;
-// }
+    Node *delete_node = current->next;
+    current->next = delete_node->next;
 
+    if (delete_node == list->tail)
+    {
+        list->tail = current;
+    }
 
+    free(delete_node->data);
+    free(delete_node);
+    list->size--;
 
+    return true;
+}
 
-int print_list(Node *head) {
+size_t ll_size(LinkedList *list)
+{
+    if (list == NULL)
+    {
+        return 0;
+    }
+    return list->size;
+}
 
+bool is_empty(LinkedList *list)
+{
+    return list == NULL || list->size == 0;
+}
+
+void ll_print(LinkedList *list, void (*print_fn)(const void *))
+{
+
+    if (list == NULL || print_fn == NULL)
+    {
+        return;
+    }
+
+    Node *current = list->head;
+    while (current != NULL)
+    {
+        print_fn(current->data);
+        printf(" -> ");
+        current = current->next;
+    }
+    printf("NULL\n");
 }
